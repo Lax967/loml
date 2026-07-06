@@ -79,40 +79,13 @@
         .next-part-btn { padding: 12px 30px; font-size: 1rem; background: #ff85a1; color: #1a0b2e; border: none; border-radius: 30px; cursor: pointer; transition: 0.3s; font-weight: bold; box-shadow: 0 4px 20px rgba(255,133,161,0.5); white-space: nowrap; }
         .next-part-btn:hover { background: #ff477e; color: white; transform: scale(1.05); }
 
-        /* --- PART 3 FIREWORKS SCREEN WITH SPLIT TWO-HALF HEART --- */
+        /* --- PART 3 FIREWORKS SCREEN (CLEAN FULL CANVAS) --- */
         #part3 { 
             display: none; opacity: 0; transition: opacity 1s ease; 
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
             background: #05020a; z-index: 9999; overflow: hidden;
         }
         #fwCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-        
-        /* Center Container for the Multi-Path Heart */
-        .svg-heart-container {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 550px; height: 550px; display: flex; align-items: center; justify-content: center;
-            animation: heartPulseGlow 2.5s ease-in-out infinite;
-        }
-        svg { width: 100%; height: 100%; }
-        
-        /* NEON GLOW FOR BOTH NAME PATHS */
-        .text-path-style {
-            font-family: 'Georgia', serif; font-weight: 900; font-size: 21px;
-            letter-spacing: 4px;
-        }
-        .axl-side {
-            fill: #ffffff;
-            text-shadow: 0 0 5px #fff, 0 0 15px #4ea8de, 0 0 30px #4ea8de, 0 0 50px #56cfe1;
-        }
-        .ira-side {
-            fill: #ffffff;
-            text-shadow: 0 0 5px #fff, 0 0 15px #ff477e, 0 0 30px #ff477e, 0 0 50px #ff85a1;
-        }
-
-        @keyframes heartPulseGlow {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); filter: drop-shadow(0 0 15px rgba(255,71,126,0.4)); }
-            50% { transform: translate(-50%, -50%) scale(1.05); filter: drop-shadow(0 0 35px rgba(255,133,161,0.8)); }
-        }
 
         /* --- OVERLAY POPUP FOR FRONT-OF-SCREEN PAPER --- */
         .modal-overlay {
@@ -217,26 +190,6 @@
 
     <div id="part3">
         <canvas id="fwCanvas"></canvas>
-        <div class="svg-heart-container">
-            <svg viewBox="0 0 600 600">
-                <defs>
-                    <path id="leftHeartPath" d="M 300,530 C 300,530 110,380 50,260 C 0,160 40,70 130,60 C 200,50 270,80 300,165" />
-                    <path id="rightHeartPath" d="M 300,165 C 330,80 400,50 470,60 C 560,70 600,160 550,260 C 490,380 300,530 300,530" />
-                </defs>
-                
-                <text class="text-path-style axl-side">
-                    <textPath href="#leftHeartPath" startOffset="5%">
-                        AXL ❤️ AXL ❤️ AXL ❤️ AXL ❤️ AXL ❤️ AXL ❤️ AXL ❤️ AXL ❤️
-                    </textPath>
-                </text>
-                
-                <text class="text-path-style ira-side">
-                    <textPath href="#rightHeartPath" startOffset="5%">
-                        IRA ❤️ IRA ❤️ IRA ❤️ IRA ❤️ IRA ❤️ IRA ❤️ IRA ❤️ IRA ❤️
-                    </textPath>
-                </text>
-            </svg>
-        </div>
     </div>
 
     <div class="modal-overlay" id="letterModal" onclick="closeLetter()">
@@ -258,59 +211,94 @@
         };
 
         let audioCtx = null;
+        let noiseBuffer = null;
 
         function initAudio() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                createNoiseBuffer();
             }
         }
 
-        /* --- SYNTHESIZE FIREWORK AUDIO DIRECTLY VIA BROWSER NODES --- */
+        function createNoiseBuffer() {
+            const bufferSize = audioCtx.sampleRate * 1.5; 
+            noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const output = noiseBuffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                output[i] = Math.random() * 2 - 1;
+            }
+        }
+
         function playLaunchSound() {
             if (!audioCtx) return;
             let osc = audioCtx.createOscillator();
             let gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(60, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.5);
-
-            gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
-
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.5);
-        }
-
-        function playExplosionSound() {
-            if (!audioCtx) return;
-            let osc = audioCtx.createOscillator();
             let filter = audioCtx.createBiquadFilter();
-            let gain = audioCtx.createGain();
 
             osc.connect(filter);
             filter.connect(gain);
             gain.connect(audioCtx.destination);
 
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(120, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + 0.8);
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(45, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime + 0.6);
 
             filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(300, audioCtx.currentTime);
-            filter.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + 0.8);
+            filter.frequency.setValueAtTime(250, audioCtx.currentTime);
 
-            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
+            gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
 
             osc.start();
-            osc.stop(audioCtx.currentTime + 0.8);
+            osc.stop(audioCtx.currentTime + 0.6);
+        }
+
+        function playExplosionSound() {
+            if (!audioCtx || !noiseBuffer) return;
+
+            const now = audioCtx.currentTime;
+
+            // Deep thud wave
+            let bassOsc = audioCtx.createOscillator();
+            let bassGain = audioCtx.createGain();
+            bassOsc.connect(bassGain);
+            bassGain.connect(audioCtx.destination);
+
+            bassOsc.type = 'sine';
+            bassOsc.frequency.setValueAtTime(95, now);
+            bassOsc.frequency.exponentialRampToValueAtTime(15, now + 0.7);
+
+            bassGain.gain.setValueAtTime(0.5, now);
+            bassGain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+
+            bassOsc.start(now);
+            bassOsc.stop(now + 0.7);
+
+            // Audio buffer crash
+            let noiseSource = audioCtx.createBufferSource();
+            noiseSource.buffer = noiseBuffer;
+
+            let noiseFilter = audioCtx.createBiquadFilter();
+            let noiseGain = audioCtx.createGain();
+
+            noiseSource.connect(noiseFilter);
+            noiseFilter.connect(noiseGain);
+            noiseGain.connect(audioCtx.destination);
+
+            noiseFilter.type = 'bandpass';
+            noiseFilter.frequency.setValueAtTime(800, now);
+            noiseFilter.frequency.exponentialRampToValueAtTime(120, now + 0.5);
+
+            noiseGain.gain.setValueAtTime(0.22, now);
+            noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+            noiseGain.gain.linearRampToValueAtTime(0.001, now + 0.5);
+
+            noiseSource.start(now);
+            noiseSource.stop(now + 0.5);
         }
 
         function goToCelebration() {
-            initAudio(); // Initialize safely on first interaction
+            initAudio();
             document.getElementById('intro').classList.add('fade-out');
             setTimeout(() => {
                 document.getElementById('intro').style.display = 'none';
@@ -367,7 +355,7 @@
                     this.targetY = Math.random() * (canvas.height * 0.5) + canvas.height * 0.1;
                     this.speed = 5 + Math.random() * 4;
                     this.color = `hsl(${Math.random() * 360}, 100%, 60%)`;
-                    playLaunchSound(); // Trigger launch audio
+                    playLaunchSound();
                 }
                 update() {
                     this.y -= this.speed;
@@ -410,7 +398,7 @@
             }
 
             function explode(x, y, color) {
-                playExplosionSound(); // Trigger explosion audio
+                playExplosionSound();
                 for (let i = 0; i < 60; i++) {
                     particles.push(new Particle(x, y, color));
                 }
