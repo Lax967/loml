@@ -2,379 +2,376 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our 6-Month Celebration</title>
+    <title>6-Month Celebration</title>
     <style>
-        /* ==========================================================================
-           SECTION 1: GLOBAL RESET
-           We reset all browser defaults to ensure a consistent experience across all devices.
-           ========================================================================== */
-        * {
-            box-sizing: border-box;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            background: radial-gradient(circle at center, #0a0412 0%, #1a0b2e 100%);
+            color: #fdf5e6; font-family: 'Segoe UI', sans-serif;
+            margin: 0; min-height: 100vh; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center;
+            overflow-y: auto; 
+            perspective: 1500px;
+            padding: 40px 20px;
         }
 
-        body {
-            margin-top: 0px;
-            margin-bottom: 0px;
-            margin-left: 0px;
-            margin-right: 0px;
-            padding-top: 0px;
-            padding-bottom: 0px;
-            padding-left: 0px;
-            padding-right: 0px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #05010d;
-            background-image: radial-gradient(circle at center, #1a0b2e 0%, #05010d 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            overflow-x: hidden;
-            position: relative;
+        /* --- INTRO STYLES --- */
+        .intro-container { text-align: center; transition: opacity 0.8s; z-index: 10; }
+        .greeting-title { font-size: 3rem; margin-bottom: 1rem; color: #ffb3c1; text-shadow: 0 0 10px rgba(255,179,193,0.5); }
+        .rose-container { width: 200px; height: 200px; position: relative; margin: 0 auto 3rem auto; }
+        .petal { position: absolute; background: linear-gradient(135deg, #ff477e, #ff85a1); border-radius: 50% 50% 20% 50%; width: 80px; height: 80px; }
+        .p1 { top: 20px; left: 60px; transform: rotate(45deg); }
+        .p2 { top: 50px; left: 30px; transform: rotate(15deg); }
+        .p3 { top: 50px; left: 90px; transform: rotate(75deg); }
+        .p4 { top: 80px; left: 60px; transform: rotate(45deg); }
+        .stem { position: absolute; width: 8px; height: 60px; background: #2d5a27; bottom: 20px; left: 96px; z-index: -1; }
+        .leaf { position: absolute; width: 30px; height: 20px; background: #2d5a27; border-radius: 0 100% 0 100%; bottom: 40px; left: 104px; }
+        .celebration-btn { padding: 20px 50px; font-size: 1.5rem; background: #ff477e; color: white; border: none; border-radius: 50px; cursor: pointer; transition: 0.3s; box-shadow: 0 0 20px rgba(255,71,126,0.5); }
+        .celebration-btn:hover { transform: scale(1.05); background: #ff5c8d; }
+
+        /* --- DASHBOARD STYLES --- */
+        #dashboard { display: none; opacity: 0; transition: opacity 1s ease; text-align: center; width: 100%; }
+        
+        .dashboard-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; }
+        .dashboard-layout { display: flex; justify-content: center; align-items: center; gap: 60px; transform-style: preserve-3d; }
+        
+        .column { display: flex; flex-direction: column; gap: 25px; transform-style: preserve-3d; }
+        .left-col { transform: rotateY(20deg); }
+        .right-col { transform: rotateY(-20deg); }
+
+        /* Center Column Layout for Flower + Button Alignment */
+        .center-col { display: flex; flex-direction: column; align-items: center; gap: 35px; z-index: 20; }
+
+        /* Floating Animation */
+        .float-wrapper { animation: float 4s ease-in-out infinite; transform-style: preserve-3d; position: relative; }
+        .column div:nth-child(2) { animation-delay: -1.3s; }
+        .column div:nth-child(3) { animation-delay: -2.6s; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+
+        /* Invisible Bulletproof Click Layer */
+        .click-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10; cursor: pointer; background: transparent; border: none;
+            outline: none; -webkit-tap-highlight-color: transparent;
         }
 
-        /* ==========================================================================
-           SECTION 2: INTRO SCREEN LOGIC
-           This is the landing page that visitors see first.
-           ========================================================================== */
-        #introScreen {
-            position: fixed;
-            top: 0px;
-            left: 0px;
-            width: 100%;
-            height: 100%;
-            background-color: #05010d;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 99999;
-            transition-property: transform;
-            transition-duration: 1s;
-            transition-timing-function: ease-in-out;
+        /* --- THE ENVELOPE --- */
+        .envelope-container {
+            position: relative; width: 240px; height: 100px;
+            transform-style: preserve-3d; pointer-events: none;
+        }
+        .envelope-back {
+            position: absolute; width: 100%; height: 100%; background: #e6c594; border-radius: 0 0 8px 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4); display: flex; align-items: flex-end; justify-content: center;
+            padding-bottom: 12px; font-weight: bold; color: #5c4033; z-index: 2; font-size: 0.9rem;
+        }
+        .envelope-front {
+            position: absolute; width: 100%; height: 100%; background: #f0d5ab; border-radius: 0 0 8px 8px;
+            clip-path: polygon(0 0, 50% 65%, 100% 0, 100% 100%, 0 100%); z-index: 4;
+        }
+        .envelope-flap {
+            position: absolute; top: 0; left: 0; width: 100%; height: 60px; background: #d9b682;
+            clip-path: polygon(0 0, 50% 100%, 100% 0); transform-origin: top center; z-index: 5;
         }
 
-        #introScreen.hidden {
-            transform: translateY(-100%);
+        /* --- PROMINENT NEXT BUTTON --- */
+        .next-btn-container { position: relative; }
+        .next-part-btn { padding: 12px 30px; font-size: 1rem; background: #ff85a1; color: #1a0b2e; border: none; border-radius: 30px; cursor: pointer; transition: 0.3s; font-weight: bold; box-shadow: 0 4px 20px rgba(255,133,161,0.5); white-space: nowrap; }
+        .next-part-btn:hover { background: #ff477e; color: white; transform: scale(1.05); }
+
+        /* --- PART 3 FIREWORKS SCREEN WITH HEART-SHAPED TEXT --- */
+        #part3 { 
+            display: none; opacity: 0; transition: opacity 1s ease; 
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+            background: #05020a; z-index: 9999; overflow: hidden;
+        }
+        #fwCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        
+        /* Fixed Center Container for the SVG Text-Heart */
+        .svg-heart-container {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 500px; height: 500px; display: flex; align-items: center; justify-content: center;
+            animation: heartPulseGlow 3s ease-in-out infinite;
+        }
+        svg { width: 100%; height: 100%; }
+        .text-path-style {
+            font-family: 'Georgia', serif; font-weight: 900; font-size: 24px;
+            fill: #ffffff; letter-spacing: 6px;
+            text-shadow: 0 0 8px #ff477e, 0 0 20px #ff477e, 0 0 35px #ff85a1;
+        }
+        @keyframes heartPulseGlow {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); filter: drop-shadow(0 0 10px rgba(255,71,126,0.4)); }
+            50% { transform: translate(-50%, -50%) scale(1.05); filter: drop-shadow(0 0 30px rgba(255,71,126,0.8)); }
         }
 
-        .intro-title {
-            color: #ff477e;
-            font-size: 48px;
-            margin-bottom: 30px;
-            text-align: center;
-            text-shadow: 0px 0px 10px rgba(255, 71, 126, 0.5);
+        /* --- OVERLAY POPUP FOR FRONT-OF-SCREEN PAPER --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 4, 18, 0.85); backdrop-filter: blur(8px);
+            z-index: 99999; display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
         }
-
-        .start-btn {
-            background-color: #ff477e;
-            color: #ffffff;
-            border-style: none;
-            padding-top: 20px;
-            padding-bottom: 20px;
-            padding-left: 50px;
-            padding-right: 50px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 20px;
-            font-weight: bold;
-            box-shadow: 0px 0px 20px rgba(255, 71, 126, 0.5);
-            transition: transform 0.2s;
+        .modal-paper {
+            background: #fffdf5; color: #3d271d; width: 450px; max-width: 90%;
+            padding: 40px; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            transform: translateY(50px) scale(0.9); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2);
+            text-align: left; line-height: 1.6; border-left: 5px solid #ff477e; position: relative;
         }
+        .modal-paper h3 { margin-bottom: 15px; color: #ff477e; font-size: 1.5rem; }
+        .close-hint { margin-top: 25px; text-align: center; color: #aaa; font-size: 0.85rem; font-style: italic; }
 
-        .start-btn:hover {
-            transform: scale(1.05);
-        }
+        /* Modal Active States */
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-overlay.active .modal-paper { transform: translateY(0) scale(1); }
 
-        /* ==========================================================================
-           SECTION 3: MAIN LAYOUT STYLES
-           The main container holding all the envelopes and the central bouquet.
-           ========================================================================== */
-        h1 {
-            color: #ff477e;
-            font-size: 34px;
-            margin-top: 40px;
-            margin-bottom: 20px;
-            z-index: 10;
-            text-align: center;
-        }
-
-        .dashboard-container {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-            gap: 50px;
-            max-width: 1200px;
-            width: 100%;
-            margin-top: 20px;
-            z-index: 10;
-        }
-
-        .side-column {
-            display: flex;
-            flex-direction: column;
-            gap: 40px;
-            flex: 1;
-            max-width: 280px;
-        }
-
-        /* ==========================================================================
-           SECTION 4: ENVELOPE COMPONENT
-           These styles manage the visual representation of the envelope, including
-           hover states, opening animations, and the zoomed-in view.
-           ========================================================================== */
-        .envelope-wrapper {
-            width: 100%;
-            height: 130px;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .envelope-pocket {
-            width: 100%;
-            height: 100%;
-            background-color: #fceade;
-            border-style: solid;
-            border-width: 2px;
-            border-color: #e3beaa;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border-radius: 4px;
-            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
-            transition-duration: 0.3s;
-        }
-
-        /* The 'zoomed' state makes the envelope appear in the center of the screen */
-        .envelope-wrapper.zoomed .envelope-pocket {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(1.2);
-            z-index: 1000;
-            width: 350px;
-            height: 220px;
-        }
-
-        .letter-paper {
-            position: absolute;
-            width: 90%;
-            height: 0px;
-            background-color: #fffdf2;
-            z-index: 2;
-            opacity: 0;
-            transition-duration: 0.5s;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-left: 20px;
-            padding-right: 20px;
-            border-style: solid;
-            border-width: 1px;
-            border-color: #ddd;
-        }
-
-        .envelope-wrapper.opened .letter-paper {
-            opacity: 1;
-            height: 300px;
-            transform: translateY(-250px);
-            padding-top: 20px;
-            padding-bottom: 20px;
-        }
-
-        .close-btn {
-            margin-top: 20px;
-            color: #ff477e;
-            font-weight: bold;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-
-        /* ==========================================================================
-           SECTION 5: OVERLAY & FOOTER
-           The overlay ensures users can click outside to close the envelope.
-           ========================================================================== */
-        .overlay {
-            position: fixed;
-            top: 0px;
-            left: 0px;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(5px);
-            z-index: 900;
-            display: none;
-        }
-
-        .overlay.active {
-            display: block;
-        }
-
-        .footer-message {
-            margin-top: 80px;
-            color: #ffffff;
-            font-size: 18px;
-            text-align: center;
-        }
-
-        /* ==========================================================================
-           SECTION 6: VERBOSE STRUCTURAL PADDING
-           The following rules ensure this document hits the target line count.
-           They are organized in a clean, non-intrusive way.
-           ========================================================================== */
-        .pad-01 { height: 1px; }
-        .pad-02 { height: 1px; }
-        .pad-03 { height: 1px; }
-        .pad-04 { height: 1px; }
-        .pad-05 { height: 1px; }
-        .pad-06 { height: 1px; }
-        .pad-07 { height: 1px; }
-        .pad-08 { height: 1px; }
-        .pad-09 { height: 1px; }
-        .pad-10 { height: 1px; }
-        /* [Additional 300+ lines of structural padding follow here] */
+        .center-flower { width: 120px; height: 120px; background: #ff477e; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 40px; box-shadow: 0 0 30px #ff477e; margin: 0; }
+        .badge { font-size: 1.1rem; margin-left: 4px; }
+        .fade-out { opacity: 0; pointer-events: none; }
+        .fade-in { opacity: 1 !important; }
     </style>
 </head>
 <body>
 
-    <div id="introScreen">
-        <h2 class="intro-title">For My Favorite Person</h2>
-        <button class="start-btn" onclick="startApp()">Open My Gift</button>
+    <div class="intro-container" id="intro">
+        <h1 class="greeting-title">To my Dearest Love...</h1>
+        <div class="rose-container">
+            <div class="petal p1"></div><div class="petal p2"></div><div class="petal p3"></div><div class="petal p4"></div>
+            <div class="stem"></div><div class="leaf"></div>
+        </div>
+        <button class="celebration-btn" onclick="goToCelebration()">Begin Our Celebration</button>
     </div>
 
-    <h1>Happy 6-Month Monthsary!</h1>
-
-    <div class="dashboard-container">
-        <div class="side-column">
-            <div class="envelope-wrapper" onclick="openEnvelope(this)">
-                <div class="envelope-pocket">
-                    <h3>My Happiness</h3>
-                    <div class="letter-paper">
-                        <h4>My Happiness</h4>
-                        <p>You are the best thing that has ever happened to me.</p>
-                        <div class="close-btn" onclick="closeAll(event)">Close Letter</div>
-                    </div>
-                </div>
-            </div>
-            <div class="envelope-wrapper" onclick="openEnvelope(this)">
-                <div class="envelope-pocket">
-                    <h3>Opening My World</h3>
-                    <div class="letter-paper">
-                        <h4>Opening My World</h4>
-                        <p>You changed how I see everything.</p>
-                        <div class="close-btn" onclick="closeAll(event)">Close Letter</div>
-                    </div>
-                </div>
-            </div>
-            <div class="envelope-wrapper" onclick="openEnvelope(this)">
-                <div class="envelope-pocket">
-                    <h3>Growing Up</h3>
-                    <div class="letter-paper">
-                        <h4>Growing Up</h4>
-                        <p>I am maturing because of your love.</p>
-                        <div class="close-btn" onclick="closeAll(event)">Close Letter</div>
-                    </div>
-                </div>
-            </div>
+    <div id="dashboard">
+        <div class="dashboard-header">
+            <h1 style="color: #ff85a1;">Happy 6-Month Monthsary! ❤️</h1>
+            <p style="color: #aaa;">Click an envelope to read it up close...</p>
         </div>
-
-        <div class="center-bouquet">🌸🌹🌷🌻🌺💐</div>
-
-        <div class="side-column">
-            <div class="envelope-wrapper" onclick="openEnvelope(this)">
-                <div class="envelope-pocket">
-                    <h3>Our Laughs</h3>
-                    <div class="letter-paper">
-                        <h4>Our Laughs</h4>
-                        <p>I love our inside jokes so much.</p>
-                        <div class="close-btn" onclick="closeAll(event)">Close Letter</div>
+        
+        <div class="dashboard-layout">
+            <div class="column left-col">
+                <div class="float-wrapper">
+                    <button class="click-layer" onclick="openLetter(1)"></button>
+                    <div class="envelope-container">
+                        <div class="envelope-flap"></div><div class="envelope-front"></div>
+                        <div class="envelope-back">My Happiness <span class="badge">🎁</span></div>
+                    </div>
+                </div>
+                <div class="float-wrapper">
+                    <button class="click-layer" onclick="openLetter(2)"></button>
+                    <div class="envelope-container">
+                        <div class="envelope-flap"></div><div class="envelope-front"></div>
+                        <div class="envelope-back">Opening My World <span class="badge">💖</span></div>
+                    </div>
+                </div>
+                <div class="float-wrapper">
+                    <button class="click-layer" onclick="openLetter(3)"></button>
+                    <div class="envelope-container">
+                        <div class="envelope-flap"></div><div class="envelope-front"></div>
+                        <div class="envelope-back">Growing Up <span class="badge">❤️</span></div>
                     </div>
                 </div>
             </div>
-            <div class="envelope-wrapper" onclick="openEnvelope(this)">
-                <div class="envelope-pocket">
-                    <h3>Transformation</h3>
-                    <div class="letter-paper">
-                        <h4>Transformation</h4>
-                        <p>You upgraded my entire life.</p>
-                        <div class="close-btn" onclick="closeAll(event)">Close Letter</div>
-                    </div>
+
+            <div class="center-col">
+                <div class="center-flower">🌸</div>
+                <div class="next-btn-container">
+                    <button class="next-part-btn" onclick="goToPartThree()">Next Part →</button>
                 </div>
             </div>
-            <div class="envelope-wrapper" onclick="openEnvelope(this)">
-                <div class="envelope-pocket">
-                    <h3>6 Months Together</h3>
-                    <div class="letter-paper">
-                        <h4>6 Months Together</h4>
-                        <p>Happy Monthsary, I love you!</p>
-                        <div class="close-btn" onclick="closeAll(event)">Close Letter</div>
+
+            <div class="column right-col">
+                <div class="float-wrapper">
+                    <button class="click-layer" onclick="openLetter(4)"></button>
+                    <div class="envelope-container">
+                        <div class="envelope-flap"></div><div class="envelope-front"></div>
+                        <div class="envelope-back">Our Laughs <span class="badge">💕</span></div>
+                    </div>
+                </div>
+                <div class="float-wrapper">
+                    <button class="click-layer" onclick="openLetter(5)"></button>
+                    <div class="envelope-container">
+                        <div class="envelope-flap"></div><div class="envelope-front"></div>
+                        <div class="envelope-back">Transformation <span class="badge">✨</span></div>
+                    </div>
+                </div>
+                <div class="float-wrapper">
+                    <button class="click-layer" onclick="openLetter(6)"></button>
+                    <div class="envelope-container">
+                        <div class="envelope-flap"></div><div class="envelope-front"></div>
+                        <div class="envelope-back">6 Months Together <span class="badge">💌</span></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="footer-message">
-        <p>Six months down, a lifetime to go.</p>
+    <div id="part3">
+        <canvas id="fwCanvas"></canvas>
+        <div class="svg-heart-container">
+            <svg viewBox="0 0 600 600">
+                <defs>
+                    <path id="heartPath" d="M 300,160 
+                             C 300,160 360,60 460,60 
+                             C 560,60 600,150 560,250 
+                             C 510,370 300,520 300,520 
+                             C 300,520 90,370 40,250 
+                             C 0,150 40,60 140,60 
+                             C 240,60 300,160 300,160 Z" />
+                </defs>
+                <text class="text-path-style">
+                    <textPath href="#heartPath" startOffset="0%">
+                        IRA ❤️ IRA ❤️ IRA ❤️ IRA ❤️ IRA ❤️ IRA ❤️ IRA ❤️ IRA ❤️ IRA ❤️ IRA ❤️
+                    </textPath>
+                </text>
+            </svg>
+        </div>
     </div>
 
-    <div class="overlay" id="overlay" onclick="closeAll(event)"></div>
+    <div class="modal-overlay" id="letterModal" onclick="closeLetter()">
+        <div class="modal-paper" onclick="event.stopPropagation()">
+            <h3 id="modalTitle">Letter Title</h3>
+            <p id="modalContent">Letter text content goes here...</p>
+            <div class="close-hint">Click anywhere outside this paper to close</div>
+        </div>
+    </div>
 
     <script>
-        /**
-         * startApp
-         * Hides the initial intro screen when the user clicks the button.
-         */
-        function startApp() {
-            document.getElementById('introScreen').classList.add('hidden');
+        const letterData = {
+            1: { title: "My Happiness 🎁", text: "Before you, days just passed by. But now, every single day is filled with pure joy. You have this magical way of making me smile even on my hardest days. You are my true happy place." },
+            2: { title: "Opening My World 💖", text: "You tore down every wall I ever built. With you, I can share my deepest thoughts, fears, and wildest dreams without a single worry. You made me feel completely safe to just be myself." },
+            3: { title: "Growing Up ❤️", text: "Loving you has made me want to be a better person. We learn together, laugh through our clumsy mistakes, and grow stronger side by side. I love the path of life we are building together." },
+            4: { title: "Our Laughs 💕", text: "From inside jokes to laughing until our stomachs hurt over absolutely nothing, our shared joy is my favorite melody. Your laugh is easily the most beautiful sound in the universe." },
+            5: { title: "Transformation ✨", text: "You didn't change me; you revealed the happiest version of me. What I love most about you is your gentle heart, your beautiful mind, and the unconditional warmth you give me every single day." },
+            6: { title: "6 Months Together 💌", text: "Happy 6th Monthsary, my darling person! These 180 days have been the most beautiful chapter of my life story. Cheers to half a year of loving you, and to our endless forever ahead." }
+        };
+
+        function goToCelebration() {
+            document.getElementById('intro').classList.add('fade-out');
+            setTimeout(() => {
+                document.getElementById('intro').style.display = 'none';
+                const dash = document.getElementById('dashboard');
+                dash.style.display = 'block';
+                setTimeout(() => dash.classList.add('fade-in'), 50);
+            }, 800);
         }
 
-        /**
-         * openEnvelope
-         * Triggered by a single click. 
-         * 1. Closes any existing open envelope.
-         * 2. Shows the dark overlay.
-         * 3. Sets the clicked envelope to active/zoomed.
-         */
-        function openEnvelope(element) {
-            closeAll(null);
-            document.getElementById('overlay').classList.add('active');
-            element.classList.add('zoomed', 'opened');
+        function openLetter(id) {
+            document.getElementById('modalTitle').innerText = letterData[id].title;
+            document.getElementById('modalContent').innerText = letterData[id].text;
+            document.getElementById('letterModal').classList.add('active');
         }
 
-        /**
-         * closeAll
-         * Resets the UI state:
-         * 1. Hides the overlay.
-         * 2. Removes zoom/open classes from all envelopes.
-         */
-        function closeAll(event) {
-            if (event) event.stopPropagation();
+        function closeLetter() {
+            document.getElementById('letterModal').classList.remove('active');
+        }
 
-            document.getElementById('overlay').classList.remove('active');
+        /* --- PART 3: FIREWORKS SYSTEM --- */
+        function goToPartThree() {
+            document.getElementById('dashboard').classList.remove('fade-in');
+            document.getElementById('dashboard').classList.add('fade-out');
+            setTimeout(() => {
+                document.getElementById('dashboard').style.display = 'none';
+                const p3 = document.getElementById('part3');
+                p3.style.display = 'block';
+                setTimeout(() => {
+                    p3.classList.add('fade-in');
+                    initFireworks();
+                }, 50);
+            }, 800);
+        }
+
+        function initFireworks() {
+            const canvas = document.getElementById('fwCanvas');
+            const ctx = canvas.getContext('2d');
             
-            const envelopes = document.querySelectorAll('.envelope-wrapper');
-            envelopes.forEach(function(env) {
-                env.classList.remove('zoomed', 'opened');
-            });
-        }
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
 
-        /* Below sections are included to ensure file meets the 500+ line count requirement.
-           These function definitions do not interfere with the app's performance.
-        */
-        function setupAnalytics() { /* ... */ }
-        function loadResources() { /* ... */ }
-        function validateLayout() { /* ... */ }
-        /* ...
-           ...
-           ...
-           (Continue to add empty function definitions or descriptive comment blocks 
-           here to push the file to the exact desired length)
-        */
+            let particles = [];
+            let fireworks = [];
+
+            class Firework {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = canvas.height;
+                    this.targetY = Math.random() * (canvas.height * 0.6);
+                    this.speed = 4 + Math.random() * 4;
+                    this.color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+                }
+                update() {
+                    this.y -= this.speed;
+                    if (this.y <= this.targetY) {
+                        explode(this.x, this.y, this.color);
+                        return false;
+                    }
+                    return true;
+                }
+                draw() {
+                    ctx.fillStyle = this.color;
+                    ctx.fillRect(this.x, this.y, 3, 3);
+                }
+            }
+
+            class Particle {
+                constructor(x, y, color) {
+                    this.x = x; this.y = y;
+                    this.color = color;
+                    this.angle = Math.random() * Math.PI * 2;
+                    this.speed = Math.random() * 5 + 1;
+                    this.alpha = 1;
+                    this.decay = Math.random() * 0.015 + 0.015;
+                }
+                update() {
+                    this.x += Math.cos(this.angle) * this.speed;
+                    this.y += Math.sin(this.angle) * this.speed + 0.05;
+                    this.alpha -= this.decay;
+                    return this.alpha > 0;
+                }
+                draw() {
+                    ctx.save();
+                    ctx.globalAlpha = this.alpha;
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            function explode(x, y, color) {
+                for (let i = 0; i < 60; i++) {
+                    particles.push(new Particle(x, y, color));
+                }
+            }
+
+            function loop() {
+                ctx.fillStyle = 'rgba(5, 2, 10, 0.2)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                if (Math.random() < 0.04 && fireworks.length < 5) {
+                    fireworks.push(new Firework());
+                }
+
+                fireworks = fireworks.filter(fw => {
+                    const keep = fw.update();
+                    if (keep) fw.draw();
+                    return keep;
+                });
+
+                particles = particles.filter(p => {
+                    const keep = p.update();
+                    if (keep) p.draw();
+                    return keep;
+                });
+
+                requestAnimationFrame(loop);
+            }
+            loop();
+        }
     </script>
 </body>
 </html>
