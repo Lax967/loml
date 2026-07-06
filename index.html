@@ -84,8 +84,18 @@
             display: none; opacity: 0; transition: opacity 1s ease; 
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
             background: #05020a; z-index: 9999; overflow: hidden;
+            cursor: pointer;
         }
         #fwCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+        /* Audio Activation Hint overlay */
+        .audio-hint {
+            position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.4); font-size: 0.9rem; pointer-events: none;
+            z-index: 10000; text-align: center; font-family: sans-serif;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
 
         /* --- OVERLAY POPUP FOR FRONT-OF-SCREEN PAPER --- */
         .modal-overlay {
@@ -188,7 +198,8 @@
         </div>
     </div>
 
-    <div id="part3">
+    <div id="part3" onclick="resumeAudioFallback()">
+        <div class="audio-hint">🔊 Tap screen if audio hasn't started</div>
         <canvas id="fwCanvas"></canvas>
     </div>
 
@@ -218,6 +229,15 @@
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 createNoiseBuffer();
             }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function resumeAudioFallback() {
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
         }
 
         function createNoiseBuffer() {
@@ -230,7 +250,7 @@
         }
 
         function playLaunchSound() {
-            if (!audioCtx) return;
+            if (!audioCtx || audioCtx.state === 'suspended') return;
             let osc = audioCtx.createOscillator();
             let gain = audioCtx.createGain();
             let filter = audioCtx.createBiquadFilter();
@@ -254,7 +274,7 @@
         }
 
         function playExplosionSound() {
-            if (!audioCtx || !noiseBuffer) return;
+            if (!audioCtx || !noiseBuffer || audioCtx.state === 'suspended') return;
 
             const now = audioCtx.currentTime;
 
@@ -268,7 +288,7 @@
             bassOsc.frequency.setValueAtTime(95, now);
             bassOsc.frequency.exponentialRampToValueAtTime(15, now + 0.7);
 
-            bassGain.gain.setValueAtTime(0.5, now);
+            bassGain.gain.setValueAtTime(0.6, now);
             bassGain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
 
             bassOsc.start(now);
@@ -289,7 +309,7 @@
             noiseFilter.frequency.setValueAtTime(800, now);
             noiseFilter.frequency.exponentialRampToValueAtTime(120, now + 0.5);
 
-            noiseGain.gain.setValueAtTime(0.22, now);
+            noiseGain.gain.setValueAtTime(0.25, now);
             noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
             noiseGain.gain.linearRampToValueAtTime(0.001, now + 0.5);
 
