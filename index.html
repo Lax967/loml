@@ -2,39 +2,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>Happy Monthsary</title>
     <style>
-        body { margin: 0; background: #0f0a14; color: white; font-family: sans-serif; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
-        #intro-screen { display: flex; flex-direction: column; align-items: center; }
-        #intro-btn { padding: 15px 30px; font-size: 20px; cursor: pointer; border-radius: 20px; border: none; background: #e91e63; color: white; }
-        #main-content { display: none; text-align: center; }
-        .grid-container { display: grid; grid-template-columns: 1fr auto 1fr; gap: 40px; align-items: center; }
+        body { 
+            margin: 0; background: #0f0a14; color: white; font-family: 'Arial', sans-serif;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="red" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'), auto;
+            overflow: hidden;
+        }
+        #intro-screen { display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column; }
+        #intro-btn { padding: 15px 30px; font-size: 20px; cursor: pointer; border-radius: 20px; border: none; background: #e91e63; color: white; transition: 0.3s; }
+        #intro-btn:hover { transform: scale(1.1); }
+        #main-content { display: none; text-align: center; padding-top: 50px; }
+        .grid-container { display: grid; grid-template-columns: 1fr auto 1fr; gap: 40px; justify-items: center; align-items: center; padding: 20px; }
         .envelope { width: 200px; animation: float 3s ease-in-out infinite; }
-        .center-bouquet { width: 180px; height: 180px; border-radius: 50%; border: 4px solid #ff80ab; }
+        .center-bouquet { width: 180px; height: 180px; border-radius: 50%; border: 4px solid #ff80ab; object-fit: cover; }
+        .heart { position: absolute; color: #ff80ab; animation: floatHearts 6s linear infinite; font-size: 20px; pointer-events: none; }
         @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
+        @keyframes floatHearts { 0% { transform: translateY(100vh); opacity: 1; } 100% { transform: translateY(-10vh); opacity: 0; } }
     </style>
 </head>
 <body>
 
     <div id="intro-screen">
         <h1>Welcome</h1>
-        <button id="intro-btn">Click to Open</button>
+        <button id="intro-btn">Click to Open Your Surprise</button>
     </div>
 
     <div id="main-content">
         <h1>Happy 6-Month Monthsary! ❤️</h1>
         <div class="grid-container">
             <div>
-                <img src="Image 1.jpeg" class="envelope"><br>
-                <img src="Image 1.jpeg" class="envelope"><br>
-                <img src="Image 1.jpeg" class="envelope">
+                <img src="env.jpg" class="envelope"><br>
+                <img src="env.jpg" class="envelope"><br>
+                <img src="env.jpg" class="envelope">
             </div>
             <div>
-                <img src="Image.jpeg" class="center-bouquet">
+                <img src="bouq.jpg" class="center-bouquet">
+                <p>For My Favorite Person 🌸</p>
             </div>
             <div>
-                <img src="Image 1.jpeg" class="envelope"><br>
-                <img src="Image 1.jpeg" class="envelope"><br>
-                <img src="Image 1.jpeg" class="envelope">
+                <img src="env.jpg" class="envelope"><br>
+                <img src="env.jpg" class="envelope"><br>
+                <img src="env.jpg" class="envelope">
             </div>
         </div>
     </div>
@@ -43,6 +52,13 @@
         document.getElementById('intro-btn').addEventListener('click', () => {
             document.getElementById('intro-screen').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
+            for(let i=0; i<30; i++) {
+                const h = document.createElement('div');
+                h.innerHTML = '❤️'; h.className = 'heart';
+                h.style.left = Math.random() * 100 + 'vw';
+                h.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                document.body.appendChild(h);
+            }
         });
     </script>
 </body>
