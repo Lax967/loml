@@ -32,46 +32,82 @@
         /* --- DASHBOARD STYLES --- */
         #dashboard { display: none; opacity: 0; transition: opacity 1s ease; text-align: center; width: 100%; }
         
-        .dashboard-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; }
+        .dashboard-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 40px; }
         .dashboard-layout { display: flex; justify-content: center; align-items: center; gap: 60px; transform-style: preserve-3d; }
         
-        .column { display: flex; flex-direction: column; gap: 25px; transform-style: preserve-3d; }
-        .left-col { transform: rotateY(20deg); }
-        .right-col { transform: rotateY(-20deg); }
+        .column { display: flex; flex-direction: column; gap: 35px; transform-style: preserve-3d; }
+        .left-col { transform: rotateY(15deg); }
+        .right-col { transform: rotateY(-15deg); }
 
-        /* Center Column Layout for Flower + Button Alignment */
         .center-col { display: flex; flex-direction: column; align-items: center; gap: 35px; z-index: 20; }
 
-        /* Floating Animation */
-        .float-wrapper { animation: float 4s ease-in-out infinite; transform-style: preserve-3d; position: relative; }
-        .column div:nth-child(2) { animation-delay: -1.3s; }
-        .column div:nth-child(3) { animation-delay: -2.6s; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+        /* --- STUNNING FLOATING LETTER CARDS --- */
+        .float-wrapper { 
+            position: relative; 
+            transform-style: preserve-3d;
+            animation: float-card 5s ease-in-out infinite;
+        }
+        
+        /* Staggered floating delays for natural organic movement */
+        .column .float-wrapper:nth-child(1) { animation-delay: 0s; }
+        .column .float-wrapper:nth-child(2) { animation-delay: -1.5s; }
+        .column .float-wrapper:nth-child(3) { animation-delay: -3s; }
 
-        /* Invisible Bulletproof Click Layer */
-        .click-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 10; cursor: pointer; background: transparent; border: none;
-            outline: none; -webkit-tap-highlight-color: transparent;
+        @keyframes float-card {
+            0%, 100% { transform: translateY(0) rotateX(0deg); }
+            50% { transform: translateY(-15px) rotateX(3deg); }
         }
 
-        /* --- THE ENVELOPE --- */
-        .envelope-container {
-            position: relative; width: 240px; height: 100px;
-            transform-style: preserve-3d; pointer-events: none;
+        .letter-card {
+            position: relative;
+            width: 260px;
+            height: 110px;
+            background: linear-gradient(135deg, rgba(255, 71, 126, 0.15) 0%, rgba(26, 11, 46, 0.8) 100%);
+            border: 2px solid rgba(255, 133, 161, 0.4);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(255, 71, 126, 0.2);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
         }
-        .envelope-back {
-            position: absolute; width: 100%; height: 100%; background: #e6c594; border-radius: 0 0 8px 8px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4); display: flex; align-items: flex-end; justify-content: center;
-            padding-bottom: 12px; font-weight: bold; color: #5c4033; z-index: 2; font-size: 0.9rem;
+
+        .letter-card::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 16px;
+            background: linear-gradient(45deg, #ff477e, #ff85a1, transparent, #ff477e);
+            z-index: -1;
+            opacity: 0.3;
+            transition: opacity 0.4s;
         }
-        .envelope-front {
-            position: absolute; width: 100%; height: 100%; background: #f0d5ab; border-radius: 0 0 8px 8px;
-            clip-path: polygon(0 0, 50% 65%, 100% 0, 100% 100%, 0 100%); z-index: 4;
+
+        .letter-card:hover {
+            transform: scale(1.08) translateZ(20px);
+            border-color: #ff477e;
+            box-shadow: 0 15px 45px rgba(255, 71, 126, 0.5);
         }
-        .envelope-flap {
-            position: absolute; top: 0; left: 0; width: 100%; height: 60px; background: #d9b682;
-            clip-path: polygon(0 0, 50% 100%, 100% 0); transform-origin: top center; z-index: 5;
+
+        .letter-card:hover::before {
+            opacity: 1;
+        }
+
+        .card-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .card-icon {
+            font-size: 1.6rem;
+            filter: drop-shadow(0 2px 8px rgba(255,71,126,0.4));
         }
 
         /* --- PROMINENT NEXT BUTTON --- */
@@ -79,7 +115,7 @@
         .next-part-btn { padding: 12px 30px; font-size: 1rem; background: #ff85a1; color: #1a0b2e; border: none; border-radius: 30px; cursor: pointer; transition: 0.3s; font-weight: bold; box-shadow: 0 4px 20px rgba(255,133,161,0.5); white-space: nowrap; }
         .next-part-btn:hover { background: #ff477e; color: white; transform: scale(1.05); }
 
-        /* --- PART 3 FIREWORKS SCREEN (CLEAN FULL CANVAS) --- */
+        /* --- PART 3 FIREWORKS SCREEN --- */
         #part3 { 
             display: none; opacity: 0; transition: opacity 1s ease; 
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
@@ -88,7 +124,6 @@
         }
         #fwCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
-        /* Audio Activation Hint overlay */
         .audio-hint {
             position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
             color: rgba(255, 255, 255, 0.4); font-size: 0.9rem; pointer-events: none;
@@ -113,12 +148,10 @@
         .modal-paper h3 { margin-bottom: 15px; color: #ff477e; font-size: 1.5rem; }
         .close-hint { margin-top: 25px; text-align: center; color: #aaa; font-size: 0.85rem; font-style: italic; }
 
-        /* Modal Active States */
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-overlay.active .modal-paper { transform: translateY(0) scale(1); }
 
         .center-flower { width: 120px; height: 120px; background: #ff477e; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 40px; box-shadow: 0 0 30px #ff477e; margin: 0; }
-        .badge { font-size: 1.1rem; margin-left: 4px; }
         .fade-out { opacity: 0; pointer-events: none; }
         .fade-in { opacity: 1 !important; }
     </style>
@@ -136,31 +169,28 @@
 
     <div id="dashboard">
         <div class="dashboard-header">
-            <h1 style="color: #ff85a1;">Happy 6-Month Monthsary! ❤️</h1>
-            <p style="color: #aaa;">Click an envelope to read it up close...</p>
+            <h1 style="color: #ff85a1; font-size: 2.5rem; text-shadow: 0 0 15px rgba(255,133,161,0.3);">Happy 6-Month Monthsary! ❤️</h1>
+            <p style="color: #bbb; margin-top: 8px;">Tap a dynamic floating capsule to look inside...</p>
         </div>
         
         <div class="dashboard-layout">
             <div class="column left-col">
                 <div class="float-wrapper">
-                    <button class="click-layer" onclick="openLetter(1)"></button>
-                    <div class="envelope-container">
-                        <div class="envelope-flap"></div><div class="envelope-front"></div>
-                        <div class="envelope-back">My Happiness <span class="badge">🎁</span></div>
+                    <div class="letter-card" onclick="openLetter(1)">
+                        <span class="card-icon">🎁</span>
+                        <span class="card-title">My Happiness</span>
                     </div>
                 </div>
                 <div class="float-wrapper">
-                    <button class="click-layer" onclick="openLetter(2)"></button>
-                    <div class="envelope-container">
-                        <div class="envelope-flap"></div><div class="envelope-front"></div>
-                        <div class="envelope-back">Opening My World <span class="badge">💖</span></div>
+                    <div class="letter-card" onclick="openLetter(2)">
+                        <span class="card-icon">💖</span>
+                        <span class="card-title">Opening My World</span>
                     </div>
                 </div>
                 <div class="float-wrapper">
-                    <button class="click-layer" onclick="openLetter(3)"></button>
-                    <div class="envelope-container">
-                        <div class="envelope-flap"></div><div class="envelope-front"></div>
-                        <div class="envelope-back">Growing Up <span class="badge">❤️</span></div>
+                    <div class="letter-card" onclick="openLetter(3)">
+                        <span class="card-icon">❤️</span>
+                        <span class="card-title">Growing Up</span>
                     </div>
                 </div>
             </div>
@@ -174,24 +204,21 @@
 
             <div class="column right-col">
                 <div class="float-wrapper">
-                    <button class="click-layer" onclick="openLetter(4)"></button>
-                    <div class="envelope-container">
-                        <div class="envelope-flap"></div><div class="envelope-front"></div>
-                        <div class="envelope-back">Our Laughs <span class="badge">💕</span></div>
+                    <div class="letter-card" onclick="openLetter(4)">
+                        <span class="card-icon">💕</span>
+                        <span class="card-title">Our Laughs</span>
                     </div>
                 </div>
                 <div class="float-wrapper">
-                    <button class="click-layer" onclick="openLetter(5)"></button>
-                    <div class="envelope-container">
-                        <div class="envelope-flap"></div><div class="envelope-front"></div>
-                        <div class="envelope-back">Transformation <span class="badge">✨</span></div>
+                    <div class="letter-card" onclick="openLetter(5)">
+                        <span class="card-icon">✨</span>
+                        <span class="card-title">Transformation</span>
                     </div>
                 </div>
                 <div class="float-wrapper">
-                    <button class="click-layer" onclick="openLetter(6)"></button>
-                    <div class="envelope-container">
-                        <div class="envelope-flap"></div><div class="envelope-front"></div>
-                        <div class="envelope-back">6 Months Together <span class="badge">💌</span></div>
+                    <div class="letter-card" onclick="openLetter(6)">
+                        <span class="card-icon">💌</span>
+                        <span class="card-title">6 Months Together</span>
                     </div>
                 </div>
             </div>
@@ -278,7 +305,6 @@
 
             const now = audioCtx.currentTime;
 
-            // Deep thud wave
             let bassOsc = audioCtx.createOscillator();
             let bassGain = audioCtx.createGain();
             bassOsc.connect(bassGain);
@@ -294,7 +320,6 @@
             bassOsc.start(now);
             bassOsc.stop(now + 0.7);
 
-            // Audio buffer crash
             let noiseSource = audioCtx.createBufferSource();
             noiseSource.buffer = noiseBuffer;
 
