@@ -221,7 +221,6 @@
             <svg viewBox="0 0 600 600">
                 <defs>
                     <path id="leftHeartPath" d="M 300,530 C 300,530 110,380 50,260 C 0,160 40,70 130,60 C 200,50 270,80 300,165" />
-                    
                     <path id="rightHeartPath" d="M 300,165 C 330,80 400,50 470,60 C 560,70 600,160 550,260 C 490,380 300,530 300,530" />
                 </defs>
                 
@@ -258,7 +257,60 @@
             6: { title: "6 Months Together 💌", text: "Happy 6th Monthsary, my darling person! These 180 days have been the most beautiful chapter of my life story. Cheers to half a year of loving you, and to our endless forever ahead." }
         };
 
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        /* --- SYNTHESIZE FIREWORK AUDIO DIRECTLY VIA BROWSER NODES --- */
+        function playLaunchSound() {
+            if (!audioCtx) return;
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(60, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.5);
+
+            gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.5);
+        }
+
+        function playExplosionSound() {
+            if (!audioCtx) return;
+            let osc = audioCtx.createOscillator();
+            let filter = audioCtx.createBiquadFilter();
+            let gain = audioCtx.createGain();
+
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(120, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + 0.8);
+
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(300, audioCtx.currentTime);
+            filter.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + 0.8);
+
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.8);
+        }
+
         function goToCelebration() {
+            initAudio(); // Initialize safely on first interaction
             document.getElementById('intro').classList.add('fade-out');
             setTimeout(() => {
                 document.getElementById('intro').style.display = 'none';
@@ -278,8 +330,8 @@
             document.getElementById('letterModal').classList.remove('active');
         }
 
-        /* --- PART 3: FIREWORKS SYSTEM --- */
         function goToPartThree() {
+            initAudio();
             document.getElementById('dashboard').classList.remove('fade-in');
             document.getElementById('dashboard').classList.add('fade-out');
             setTimeout(() => {
@@ -293,6 +345,7 @@
             }, 800);
         }
 
+        /* --- PART 3: FIREWORKS SYSTEM --- */
         function initFireworks() {
             const canvas = document.getElementById('fwCanvas');
             const ctx = canvas.getContext('2d');
@@ -311,9 +364,10 @@
                 constructor() {
                     this.x = Math.random() * canvas.width;
                     this.y = canvas.height;
-                    this.targetY = Math.random() * (canvas.height * 0.6);
-                    this.speed = 4 + Math.random() * 4;
+                    this.targetY = Math.random() * (canvas.height * 0.5) + canvas.height * 0.1;
+                    this.speed = 5 + Math.random() * 4;
                     this.color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+                    playLaunchSound(); // Trigger launch audio
                 }
                 update() {
                     this.y -= this.speed;
@@ -356,6 +410,7 @@
             }
 
             function explode(x, y, color) {
+                playExplosionSound(); // Trigger explosion audio
                 for (let i = 0; i < 60; i++) {
                     particles.push(new Particle(x, y, color));
                 }
@@ -365,7 +420,7 @@
                 ctx.fillStyle = 'rgba(5, 2, 10, 0.2)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                if (Math.random() < 0.04 && fireworks.length < 5) {
+                if (Math.random() < 0.03 && fireworks.length < 4) {
                     fireworks.push(new Firework());
                 }
 
