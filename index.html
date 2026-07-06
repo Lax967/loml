@@ -79,7 +79,7 @@
         .next-part-btn { padding: 12px 30px; font-size: 1rem; background: #ff85a1; color: #1a0b2e; border: none; border-radius: 30px; cursor: pointer; transition: 0.3s; font-weight: bold; box-shadow: 0 4px 20px rgba(255,133,161,0.5); white-space: nowrap; }
         .next-part-btn:hover { background: #ff477e; color: white; transform: scale(1.05); }
 
-        /* --- PART 3 FIREWORKS SCREEN WITH HEART-SHAPED TEXT --- */
+        /* --- PART 3 FIREWORKS SCREEN WITH SPLIT TWO-HALF HEART --- */
         #part3 { 
             display: none; opacity: 0; transition: opacity 1s ease; 
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
@@ -87,21 +87,31 @@
         }
         #fwCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         
-        /* Fixed Center Container for the SVG Text-Heart */
+        /* Center Container for the Multi-Path Heart */
         .svg-heart-container {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 500px; height: 500px; display: flex; align-items: center; justify-content: center;
-            animation: heartPulseGlow 3s ease-in-out infinite;
+            width: 550px; height: 550px; display: flex; align-items: center; justify-content: center;
+            animation: heartPulseGlow 2.5s ease-in-out infinite;
         }
         svg { width: 100%; height: 100%; }
+        
+        /* NEON GLOW FOR BOTH NAME PATHS */
         .text-path-style {
-            font-family: 'Georgia', serif; font-weight: 900; font-size: 24px;
-            fill: #ffffff; letter-spacing: 6px;
-            text-shadow: 0 0 8px #ff477e, 0 0 20px #ff477e, 0 0 35px #ff85a1;
+            font-family: 'Georgia', serif; font-weight: 900; font-size: 21px;
+            letter-spacing: 4px;
         }
+        .axl-side {
+            fill: #ffffff;
+            text-shadow: 0 0 5px #fff, 0 0 15px #4ea8de, 0 0 30px #4ea8de, 0 0 50px #56cfe1;
+        }
+        .ira-side {
+            fill: #ffffff;
+            text-shadow: 0 0 5px #fff, 0 0 15px #ff477e, 0 0 30px #ff477e, 0 0 50px #ff85a1;
+        }
+
         @keyframes heartPulseGlow {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); filter: drop-shadow(0 0 10px rgba(255,71,126,0.4)); }
-            50% { transform: translate(-50%, -50%) scale(1.05); filter: drop-shadow(0 0 30px rgba(255,71,126,0.8)); }
+            0%, 100% { transform: translate(-50%, -50%) scale(1); filter: drop-shadow(0 0 15px rgba(255,71,126,0.4)); }
+            50% { transform: translate(-50%, -50%) scale(1.05); filter: drop-shadow(0 0 35px rgba(255,133,161,0.8)); }
         }
 
         /* --- OVERLAY POPUP FOR FRONT-OF-SCREEN PAPER --- */
@@ -210,17 +220,20 @@
         <div class="svg-heart-container">
             <svg viewBox="0 0 600 600">
                 <defs>
-                    <path id="heartPath" d="M 300,160 
-                             C 300,160 360,60 460,60 
-                             C 560,60 600,150 560,250 
-                             C 510,370 300,520 300,520 
-                             C 300,520 90,370 40,250 
-                             C 0,150 40,60 140,60 
-                             C 240,60 300,160 300,160 Z" />
+                    <path id="leftHeartPath" d="M 300,530 C 300,530 110,380 50,260 C 0,160 40,70 130,60 C 200,50 270,80 300,165" />
+                    
+                    <path id="rightHeartPath" d="M 300,165 C 330,80 400,50 470,60 C 560,70 600,160 550,260 C 490,380 300,530 300,530" />
                 </defs>
-                <text class="text-path-style">
-                    <textPath href="#heartPath" startOffset="0%">
-                        IRA ❤️ IRA ❤️ IRA ❤️ IRA ❤️ IRA ❤️ IRA ❤️ IRA ❤️ IRA ❤️ IRA ❤️ IRA ❤️
+                
+                <text class="text-path-style axl-side">
+                    <textPath href="#leftHeartPath" startOffset="5%">
+                        AXL ❤️ AXL ❤️ AXL ❤️ AXL ❤️ AXL ❤️ AXL ❤️ AXL ❤️ AXL ❤️
+                    </textPath>
+                </text>
+                
+                <text class="text-path-style ira-side">
+                    <textPath href="#rightHeartPath" startOffset="5%">
+                        IRA ❤️ IRA ❤️ IRA ❤️ IRA ❤️ IRA ❤️ IRA ❤️ IRA ❤️ IRA ❤️
                     </textPath>
                 </text>
             </svg>
